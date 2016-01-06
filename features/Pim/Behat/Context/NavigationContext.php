@@ -97,7 +97,7 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
         $this->getSession()->visit($this->locatePath('/user/login'));
 
         $this->spin(function () {
-            return $this->getSession()->getPage()->find('css', 'div.title-box');
+            return $this->getSession()->getPage()->find('css', '.title-box');
         });
 
         $this->getSession()->getPage()->fillField('_username', $username);
@@ -106,7 +106,7 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
         $this->getSession()->getPage()->pressButton('Log in');
 
         $this->spin(function () {
-            return $this->getSession()->getPage()->find('css', 'div.version-container');
+            return $this->getSession()->getPage()->find('css', '.version-container');
         });
     }
 
@@ -219,7 +219,6 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
         $getter = sprintf('get%s', $page);
         $entity = $this->getFixturesContext()->$getter($identifier);
         $this->openPage(sprintf('%s edit', $page), ['id' => $entity->getId()]);
-        $this->wait();
     }
 
     /**
@@ -235,7 +234,6 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
         $getter = sprintf('get%s', $page);
         $entity = $this->getFixturesContext()->$getter($identifier);
         $this->openPage(sprintf('%s show', $page), ['id' => $entity->getId()]);
-        $this->wait();
     }
 
     /**
@@ -301,16 +299,20 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
     }
 
     /**
-     * @param string $page
+     * @param string $pageName
      * @param array  $options
      *
      * @return \SensioLabs\Behat\PageObjectExtension\PageObject\Page
      */
-    public function openPage($page, array $options = [])
+    public function openPage($pageName, array $options = [])
     {
-        $this->currentPage = $page;
+        $this->currentPage = $pageName;
 
-        return $this->getCurrentPage()->open($options);
+        $page = $this->getCurrentPage()->open($options);
+
+        $this->wait();
+
+        return $page;
     }
 
     /**
