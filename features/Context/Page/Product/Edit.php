@@ -64,7 +64,14 @@ class Edit extends ProductEditForm
      */
     public function save()
     {
-        $this->getElement('Save')->click();
+        $element = $this->getElement('Save');
+
+        $this->spin(function () use ($element) {
+            return $element->isVisible();
+        }, "Waiting for save button to be visible");
+
+        $element->click();
+
         $this->spin(function () {
             return null === $this->find(
                 'css',
