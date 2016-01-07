@@ -98,7 +98,10 @@ class Form extends Base
 
         $panel = strtolower($panel);
         if (null === $elt->find('css', sprintf('button[data-panel$="%s"].active', $panel))) {
-            $elt->find('css', sprintf('button[data-panel$="%s"]', $panel))->click();
+            $button = $this->spin(function () use ($elt, $panel) {
+                return $elt->find('css', sprintf('button[data-panel$="%s"]', $panel));
+            }, 'Cannot find the data-panel button in the panel');
+            $button->click();
         }
     }
 
