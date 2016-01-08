@@ -8,6 +8,7 @@ use Context\Page\Base\Base;
 use Context\Spin\SpinCapableTrait;
 use SensioLabs\Behat\PageObjectExtension\Context\PageFactory;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectAwareInterface;
+use Behat\Mink\Exception\DriverException;
 
 class NavigationContext extends PimContext implements PageObjectAwareInterface
 {
@@ -93,7 +94,13 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
     {
         $this->getMainContext()->getSubcontext('fixtures')->setUsername($username);
 
-        $this->getSession()->setCookie('BAPID', null);
+        try {
+            $this->getSession()->setCookie('BAPID', null);
+        } catch (DriverException $e) {
+            // No way to check if the request is available before calling this method
+            // with webkit driver
+        }
+
         $this->getSession()->visit($this->locatePath('/user/login'));
 
         $this->spin(function () {

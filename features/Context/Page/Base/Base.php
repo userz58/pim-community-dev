@@ -164,12 +164,11 @@ class Base extends Page
         $name      = $elt->find('css', '.product-name');
 
         if (!$subtitle || !$separator || !$name) {
-            $title = $this->getElement('Product title')->find('css', '.product-label')->getText();
-            if (!$title) {
-                throw new \Exception('Could not find the page title');
-            }
+            $titleElt = $this->spin(function () {
+                return $this->getElement('Product title')->find('css', '.product-label');
+            }, "Could not find the page title");
 
-            return $title;
+            return $titleElt->getText();
         }
 
         return sprintf(
