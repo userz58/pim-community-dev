@@ -1,6 +1,6 @@
 'use strict';
 
-define('routing', function (Routing) {
+define(['routing'], function (Routing) {
     var matchUrl = function (url) {
         var routes = Routing.getRoutes().c;
         var route;

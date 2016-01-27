@@ -134,7 +134,6 @@ class InstallCommand extends ContainerAwareCommand
     protected function assetsStep(InputInterface $input, OutputInterface $output)
     {
         $this->commandExecutor->runCommand('pim:installer:assets');
-        $this->commandExecutor->runCommand('oro:require:build');
 
         return $this;
     }
