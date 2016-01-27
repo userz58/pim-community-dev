@@ -2,7 +2,7 @@
 /*jslint browser: true, nomen: true, todo: true, vars: true*/
 /*global define*/
 
-define(['jquery', 'bootstrap', 'jquery-ui'], function ($) {
+define(['jquery', 'bootstrap'], function ($) {
     'use strict';
 
     // todo: remove this or move somewhere else

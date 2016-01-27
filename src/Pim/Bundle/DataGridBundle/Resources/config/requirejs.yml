@@ -8,7 +8,8 @@ config:
             exports: Backgrid
         jquery.multiselect:
             deps:
-                - jquery-ui
+                - jquery-ui/core
+                - jquery-ui/widget
         jquery.multiselect.filter:
             deps:
                 - jquery.multiselect

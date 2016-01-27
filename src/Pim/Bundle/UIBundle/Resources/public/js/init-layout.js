@@ -10,7 +10,7 @@ require(['oro/mediator'], function (mediator) {
 });
 
 require(['jquery', 'backbone', 'underscore', 'oro/translator', 'oro/app', 'oro/mediator', 'oro/layout',
-    'oro/delete-confirmation', 'oro/messenger', 'bootstrap', 'jquery-ui'
+    'oro/delete-confirmation', 'oro/messenger', 'bootstrap'
     ], function ($, Backbone, _, __, app, mediator, layout, DeleteConfirmation, messenger) {
     'use strict';
 
