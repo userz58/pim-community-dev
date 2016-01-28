@@ -4,6 +4,7 @@ define(
         'jquery',
         'backbone',
         'underscore',
+        'pim/router',
         'text!pim/template/job-execution-summary',
         'text!pim/template/job-execution-status',
         'text!pim/template/job-execution-buttons',
@@ -13,6 +14,7 @@ define(
         $,
         Backbone,
         _,
+        router,
         summaryTemplate,
         statusTemplate,
         buttonTemplate,
@@ -49,6 +51,7 @@ define(
                 this.model.bind('request', this.ajaxStart, this);
                 this.model.bind('sync', this.ajaxComplete, this);
                 this.model.bind('error', this.ajaxError, this);
+                this.listenTo(router, 'route_start', this.stopRefresh;
             },
 
             ajaxStart: function () {
@@ -59,22 +62,25 @@ define(
             ajaxComplete: function (model, resp) {
                 $(this.loadingImageSelector).addClass('transparent');
                 if (!resp.jobExecution.isRunning) {
-                    clearInterval(interval);
-                    interval = null;
+                    this.stopRefresh();
                 }
                 loading = false;
             },
 
             ajaxError: function (model, resp, options) {
                 $(this.loadingImageSelector).addClass('transparent');
-                clearInterval(interval);
-                interval = null;
+                this.stopRefresh();
                 this.$el.html(
                     '<tr><td colspan="5"><span class="label label-important">' +
                         options.xhr.statusText +
                     '</span></td></tr>'
                 );
                 loading = false;
+            },
+
+            stopRefresh: function () {
+                clearInterval(interval);
+                interval = null;
             },
 
             events: {
