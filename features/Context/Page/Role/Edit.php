@@ -25,6 +25,10 @@ class Edit extends Form
     {
         $iconSelector = '.acl-permission i.acl-permission-toggle.non-granted';
 
+        $this->spin(function () use ($iconSelector) {
+            return $this->findAll('css', $iconSelector);
+        }, sprintf('Cannot find the right switchers'));
+
         $this->getSession()->executeScript(
             sprintf('$("%s").each(function () { $(this).click(); });', $iconSelector)
         );
@@ -40,6 +44,10 @@ class Edit extends Form
         $resourceSelector = sprintf(".acl-permission strong:contains('%s')", $resource);
         $iconSelector     = 'i.acl-permission-toggle.non-granted';
 
+        $this->spin(function () use ($resourceSelector) {
+            return $this->find('css', $resourceSelector);
+        }, sprintf('Cannot find the right switcher for %s', $resource));
+
         $this->getSession()->executeScript(
             sprintf('$("%s").parent().parent().find("%s").click();', $resourceSelector, $iconSelector)
         );
@@ -54,6 +62,10 @@ class Edit extends Form
     {
         $resourceSelector = sprintf(".acl-permission strong:contains('%s')", $resource);
         $iconSelector     = 'i.acl-permission-toggle.granted';
+
+        $this->spin(function () use ($resourceSelector) {
+            return $this->find('css', $resourceSelector);
+        }, sprintf('Cannot find the right switcher for %s', $resource));
 
         $this->getSession()->executeScript(
             sprintf('$("%s").parent().parent().find("%s").click();', $resourceSelector, $iconSelector)

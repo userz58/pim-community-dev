@@ -149,7 +149,7 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
         $this->currentPage = $page;
         $this->getCurrentPage()->open();
 
-        return new Step\Then('I should see "403 Forbidden"');
+        return new Step\Then('I should see the text "403 Forbidden"');
     }
 
     /**
@@ -327,12 +327,15 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
      */
     public function assertAddress($expected)
     {
-        $actualFullUrl = $this->getSession()->getCurrentUrl();
-        $actualUrl     = $this->sanitizeUrl($actualFullUrl);
+        $this->spin(function () use ($expected) {
+            $actualFullUrl = $this->getSession()->getCurrentUrl();
+            $actualUrl     = $this->sanitizeUrl($actualFullUrl);
+            $result        = substr($expected, 1) === $actualUrl;
 
-        $result = parse_url($expected, PHP_URL_PATH) === $actualUrl;
+            assertTrue($result, sprintf('Expecting to be on page "%s", not "%s"', $expected, $actualUrl));
 
-        assertTrue($result, sprintf('Expecting to be on page "%s", not "%s"', $expected, $actualUrl));
+            return true;
+        }, sprintf('Expecting to be on page "%s", not "%s"', $expected, $this->getSession()->getCurrentUrl()));
     }
 
     /**
@@ -347,7 +350,7 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
         $parsedUrl = parse_url($fullUrl);
 
         if (isset($parsedUrl['fragment'])) {
-            $filteredUrl = preg_split('/url=/', $parsedUrl['fragment'])[1];
+            $filteredUrl = $parsedUrl['fragment'];
         } else {
             $filteredUrl = $parsedUrl['path'];
         }
