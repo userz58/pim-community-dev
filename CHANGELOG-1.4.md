@@ -4,6 +4,9 @@
 - PIM-5476: Fix issue with native csv product import, new products are created with extra optional values for media, metric, price
 - PIM-5470: Fix Doctrine memory leak
 
+## Technical improvements
+- PIM-5460 Several datepickers: remove jQuery UI datepickers, keep Bootstrap's
+
 # 1.4.18 (2016-01-28)
 
 ## Bug fixes
