@@ -1374,12 +1374,12 @@ class WebUser extends RawMinkContext
 
         foreach ($table->getHash() as $data) {
             $steps[] = new Step\Then(sprintf('I am on the %s page', $data['page']));
-            $steps[] = new Step\Then(sprintf('I should see "%s"', $data['section']));
+            $steps[] = new Step\Then(sprintf('I should see the text "%s"', $data['section']));
             $steps[] = new Step\Then('I am on the "Administrator" role page');
             $steps[] = new Step\Then(sprintf('I remove rights to %s', $data['permission']));
             $steps[] = new Step\Then('I save the role');
             $steps[] = new Step\Then(sprintf('I am on the %s page', $data['page']));
-            $steps[] = new Step\Then(sprintf('I should not see "%s"', $data['section']));
+            $steps[] = new Step\Then(sprintf('I should not see the text "%s"', $data['section']));
         }
         $steps[] = new Step\Then('I reset the "Administrator" rights');
 
