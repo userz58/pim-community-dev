@@ -443,6 +443,7 @@ class Grid extends Index
     public function sortBy($columnName, $order = 'ascending')
     {
         $sorter = $this->getColumnSorter($columnName);
+
         if ($sorter->getParent()->getAttribute('class') !== strtolower($order)) {
             $sorter->click();
         }
@@ -459,7 +460,10 @@ class Grid extends Index
     public function isSortedAndOrdered($columnName, $order)
     {
         $order = strtolower($order);
-        if ($this->getColumnHeader($columnName)->getAttribute('class') !== $order) {
+        $notOrdered = $this->spin(function () use ($columnName, $order) {
+            return $this->getColumnHeader($columnName)->getAttribute('class') !== $order;
+        }, 'The column is not well ordered');
+        if ($notOrdered) {
             return false;
         }
 
