@@ -285,23 +285,27 @@ class Edit extends ProductEditForm
      */
     public function getRemoveLinkFor($field)
     {
-        $link = $this->find(
-            'css',
-            sprintf(
-                '.control-group:contains("%s") .remove-attribute',
-                $field
-            )
-        );
-
-        if (!$link) {
+        $link = $this->spin( function() use ($field) {
             $link = $this->find(
                 'css',
                 sprintf(
-                    '.field-container:contains("%s") .remove-attribute',
+                    '.control-group:contains("%s") .remove-attribute',
                     $field
                 )
             );
-        }
+
+            if (!$link) {
+                $link = $this->find(
+                    'css',
+                    sprintf(
+                        '.field-container:contains("%s") .remove-attribute',
+                        $field
+                    )
+                );
+            }
+
+            return $link;
+        }, "Spining to get remove link on product edit form for field $field");
 
         return $link;
     }
