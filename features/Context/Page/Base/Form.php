@@ -75,7 +75,7 @@ class Form extends Base
      */
     public function visitTab($tab)
     {
-        $tabs = $this->spin( function () {
+        $tabs = $this->spin(function () {
 
             $tabs = $this->find('css', $this->elements['Tabs']['css']);
             if (!$tabs) {
@@ -87,7 +87,7 @@ class Form extends Base
 
             return $tabs;
 
-        }, "Visiting $tab tab");
+        }, "Findind $tab tab");
 
         $tabs->clickLink($tab);
     }
@@ -188,9 +188,9 @@ class Form extends Base
         if (!$groups) {
             $groups = $this->getElement('Form Groups');
 
-            $groupsContainer = $this->spin(function() use ($groups, $group) {
+            $groupsContainer = $this->spin(function () use ($groups, $group) {
                 return $groups->find('css', sprintf('.group-label:contains("%s")', $group));
-            });
+            }, "Finding the group $group");
 
             $button = null;
 

@@ -80,16 +80,6 @@ class Edit extends ProductEditForm
         });
     }
 
-    public function verifyAfterLogin()
-    {
-        $formContainer = $this->find('css', 'div.product-edit-form');
-        if (!$formContainer) {
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * @param bool $copy search in copy panel or main panel
      *
@@ -200,11 +190,11 @@ class Edit extends ProductEditForm
      */
     public function getAttributePosition($attribute)
     {
-        $productValues = $this->spin( function() {
+        $productValues = $this->spin(function () {
             return $this->find('css', '.tab-pane.active.product-values');
         }, "Spining on find for product-values tab to get attribute position");
 
-        $rows = $this->spin( function() use ($productValues) {
+        $rows = $this->spin(function () use ($productValues) {
             return $productValues->findAll('css', '.field-container');
         }, "Spining on findAll for rows on product-valies to get attribute position");
 
@@ -291,7 +281,7 @@ class Edit extends ProductEditForm
      */
     public function getRemoveLinkFor($field)
     {
-        $link = $this->spin( function() use ($field) {
+        $link = $this->spin(function () use ($field) {
             $link = $this->find(
                 'css',
                 sprintf(
