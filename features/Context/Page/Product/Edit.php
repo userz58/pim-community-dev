@@ -200,7 +200,13 @@ class Edit extends ProductEditForm
      */
     public function getAttributePosition($attribute)
     {
-        $rows = $this->find('css', '.tab-pane.active.product-values')->findAll('css', '.field-container');
+        $productValues = $this->spin( function() {
+            return $this->find('css', '.tab-pane.active.product-values');
+        }, "Spining on find for product-values tab to get attribute position");
+
+        $rows = $this->spin( function() use ($productValues) {
+            return $productValues->findAll('css', '.field-container');
+        }, "Spining on findAll for rows on product-valies to get attribute position");
 
         foreach ($rows as $index => $row) {
             if ($row->find('css', sprintf(':contains("%s")', $attribute))) {
@@ -350,7 +356,12 @@ class Edit extends ProductEditForm
     public function disableProduct()
     {
         $el = $this->getElement('Status switcher');
-        $el->find('css', 'a.dropdown-toggle')->click();
+
+        $statusToggle = $this->spin(function () use ($el) {
+            return $el->find('css', 'a.dropdown-toggle');
+        }, "Spining to get the status dropdown toggle to disable product on PEF");
+
+        $statusToggle->click();
         $button = $el->find('css', 'ul a[data-status="disable"]');
         if ($button) {
             $button->click();
@@ -367,7 +378,12 @@ class Edit extends ProductEditForm
     public function enableProduct()
     {
         $el = $this->getElement('Status switcher');
-        $el->find('css', 'a.dropdown-toggle')->click();
+
+        $statusToggle = $this->spin(function () use ($el) {
+            return $el->find('css', 'a.dropdown-toggle');
+        }, "Spining to get the status dropdown toggle to enable product on PEF");
+
+        $statusToggle->click();
         $button = $el->find('css', 'ul a[data-status="enable"]');
         if ($button) {
             $button->click();
