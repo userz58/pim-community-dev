@@ -12,7 +12,7 @@ Feature: Display the product history
     And I fill in the following information in the popin:
       | SKU | sandals-001 |
     And I press the "Save" button in the popin
-    And I edit the "sandals-001" product
+    And I wait for the "sandals-001" product page
     And the history of the product "sandals-001" has been built
     When I open the history
     Then there should be 1 update

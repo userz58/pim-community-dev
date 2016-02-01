@@ -232,6 +232,22 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
      * @param string $identifier
      * @param string $page
      *
+     * @Given /^I wait for the "([^"]*)" (\w+) page$/
+     */
+    public function iWaitForTheEntityEditPage($identifier, $page)
+    {
+        $page   = ucfirst($page);
+        $getter = sprintf('get%s', $page);
+        $entity = $this->getFixturesContext()->$getter($identifier);
+        $this->setCurrentPage(sprintf('%s edit', $page), ['id' => $entity->getId()]);
+
+        $this->wait();
+    }
+
+    /**
+     * @param string $identifier
+     * @param string $page
+     *
      * @Given /^I show the "([^"]*)" (\w+)$/
      * @Given /^I am on the "([^"]*)" (\w+) show page$/
      */
@@ -320,6 +336,19 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
         $this->wait();
 
         return $page;
+    }
+
+    /**
+     * @param string $pageName
+     * @param array  $options
+     *
+     * @return \SensioLabs\Behat\PageObjectExtension\PageObject\Page
+     */
+    public function setCurrentPage($pageName, array $options = [])
+    {
+        $this->currentPage = $pageName;
+
+        return $this->getCurrentPage();
     }
 
     /**
