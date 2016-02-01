@@ -114,7 +114,7 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
 
         $this->spin(function () {
             return $this->getSession()->getPage()->find('css', '.version-container');
-        });
+        }, "Spining for login with $username");
     }
 
     /**
