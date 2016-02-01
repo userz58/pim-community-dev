@@ -12,7 +12,7 @@ use Doctrine\DBAL\Schema\Schema;
  * @copyright 2015 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class Version20151102131708 extends AbstractMigration
+class Version_1_5_20151102131708_default_view extends AbstractMigration
 {
     /**
      * @param Schema $schema
