@@ -86,11 +86,12 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
     }
 
     /**
-     * @param string $username
+     * @param string  $username
+     * @param boolean $csrfRetrial
      *
      * @Given /^I am logged in as "([^"]*)"$/
      */
-    public function iAmLoggedInAs($username)
+    public function iAmLoggedInAs($username, $csrfRetrial = false)
     {
         $this->getMainContext()->getSubcontext('fixtures')->setUsername($username);
 
@@ -112,9 +113,17 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
 
         $this->getSession()->getPage()->pressButton('Log in');
 
-        $this->spin(function () {
-            return $this->getSession()->getPage()->find('css', '.version-container');
-        }, "Spining for login with $username");
+        try {
+            $this->spin(function () {
+                return $this->getSession()->getPage()->find('css', '.version-container');
+            }, "Spining for login with $username");
+        } catch (TimeoutException $e) {
+            if (false !== strpos($this->getSession()->getPage()->getText(), "CSRF")) {
+                $this->iAmLoggedInAs($username, true);
+            } else {
+                throw $e;
+            }
+        }
     }
 
     /**
@@ -232,7 +241,7 @@ class NavigationContext extends PimContext implements PageObjectAwareInterface
      * @param string $identifier
      * @param string $page
      *
-     * @Given /^I wait for the "([^"]*)" (\w+) page$/
+     * @Given /^I wait to be on the "([^"]*)" (\w+) page$/
      */
     public function iWaitForTheEntityEditPage($identifier, $page)
     {
