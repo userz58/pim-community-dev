@@ -103,7 +103,7 @@ class MediaMigration
             $this->ormConnection->update(
                 'akeneo_file_storage_file_info',
                 ['old_file_key' => $file->getFilename()],
-                ['id' => $fileInfo->getId()]
+                ['id'           => $fileInfo->getId()]
             );
         }
     }
@@ -204,7 +204,7 @@ class MediaMigration
         );
 
         foreach ($productsWithMedia as $product) {
-            foreach($product['values'] as $value) {
+            foreach ($product['values'] as $value) {
                 if (isset($value['media'])) {
                     $stmt->bindValue(1, $value['media']['originalFilename']);
                     $stmt->bindValue(2, $value['media']['filename']);
@@ -294,7 +294,7 @@ class MediaMigration
                      )
                      */
                     $valueCollection->update(
-                        ['_id' => new MongoId($product['_id']), 'values._id' => new MongoId($value['_id'])],
+                        ['_id'  => new MongoId($product['_id']), 'values._id' => new MongoId($value['_id'])],
                         ['$set' => ['values.$.media' => (int)$fileInfo['id']]]
                     );
                 }

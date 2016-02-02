@@ -78,15 +78,24 @@ switch ($storageDriver) {
             ->getQuery()
             ->execute(null, AbstractQuery::HYDRATE_ARRAY);
 
-        array_walk($variantGroupIds, function(&$value) {
+        array_walk($variantGroupIds, function (&$value) {
             $value = $value['id'];
         });
 
         $selectedProducts = $productCollection->aggregate([
             ['$unwind' => '$groupIds'],
-            ['$match' => ['groupIds'=> ['$in' => $variantGroupIds]]],
-            ['$group' => ['_id' => '$normalizedData.' . $identifierCode, 'variant_count' => ['$sum' => 1]]],
-            ['$match' => ['variant_count' => ['$gt' => 1]]]
+            ['$match'  => [
+                'groupIds' => [
+                    '$in' => $variantGroupIds
+                ]
+            ]],
+            ['$group'  => [
+                '_id'           => '$normalizedData.' . $identifierCode,
+                'variant_count' => ['$sum' => 1]
+            ]],
+            ['$match'  => [
+                'variant_count' => ['$gt' => 1]
+            ]]
         ])['result'];
 
         $productIdentifiers = [];

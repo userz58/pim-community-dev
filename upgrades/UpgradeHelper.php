@@ -26,8 +26,9 @@ class UpgradeHelper
     }
 
     /**
-     * @return \MongoClient
      * @throws \Exception
+     *
+     * @return \MongoClient
      */
     public function getMongoClient()
     {
@@ -41,8 +42,9 @@ class UpgradeHelper
     }
 
     /**
-     * @return \MongoDB
      * @throws \Exception
+     *
+     * @return \MongoDB
      */
     public function getMongoInstance()
     {

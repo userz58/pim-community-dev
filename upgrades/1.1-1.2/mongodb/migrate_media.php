@@ -5,7 +5,7 @@ $mediaCollName = 'pim_catalog_media';
 
 if (count($argv) !== 3) {
     echo sprintf("Usage: %s <mongodb_server> <mongodb_database>\n", $argv[0]);
-    echo sprintf("Example: %s mongodb://localhost:27017 akeneo_pim\n",$argv[0]);
+    echo sprintf("Example: %s mongodb://localhost:27017 akeneo_pim\n", $argv[0]);
     exit(1);
 }
 
@@ -83,7 +83,6 @@ foreach ($mediaAttributes as $attribute => $filenames) {
             echo "ERROR on setting up the originalFilename for Attribute $attribute and filename $filename:";
             print_r($result);
         }
-        
     }
 }
 echo "All done !\n";
