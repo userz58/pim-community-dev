@@ -166,7 +166,9 @@ class Form extends Base
      *
      * @param string $group
      *
-     * @throws ElementNotFoundException
+     * @return bool
+     *
+     * @throws \Context\Spin\TimeoutException
      * @throws \Exception
      */
     public function visitGroup($group)
@@ -175,8 +177,9 @@ class Form extends Base
         if (!$groups) {
             $groups = $this->getElement('Form Groups');
 
-            $groupsContainer = $groups
-                ->find('css', sprintf('.attribute-group-label:contains("%s")', $group));
+            $groupsContainer = $this->spin(function () use ($groups, $group) {
+                return $groups->find('css', sprintf('.attribute-group-label:contains("%s")', $group));
+            });
 
             $button = null;
 
