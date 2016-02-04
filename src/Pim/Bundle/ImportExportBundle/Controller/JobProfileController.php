@@ -417,7 +417,7 @@ class JobProfileController extends AbstractDoctrineController
 
         $this->eventDispatcher->dispatch(JobProfileEvents::POST_EXECUTE, new GenericEvent($jobInstance));
 
-        $this->addFlash('success', sprintf('The %s is running.', $this->getJobType()));
+        $this->addFlash('success', sprintf('flash.%s.running', $this->getJobType()));
 
         return $jobExecution;
     }
