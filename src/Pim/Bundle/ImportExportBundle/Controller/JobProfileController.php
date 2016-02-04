@@ -8,7 +8,6 @@ use Akeneo\Bundle\BatchBundle\Job\JobInstanceFactory;
 use Akeneo\Bundle\BatchBundle\Launcher\JobLauncherInterface;
 use Akeneo\Component\Batch\Job\Job;
 use Akeneo\Component\Batch\Model\JobInstance;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Pim\Bundle\EnrichBundle\Flash\Message;
 use Pim\Bundle\EnrichBundle\Form\Type\UploadType;
@@ -299,6 +298,7 @@ class JobProfileController
         $this->eventDispatcher->dispatch(JobProfileEvents::PRE_REMOVE, new GenericEvent($jobInstance));
 
         $this->entityManager->remove($jobInstance);
+        $this->entityManager->flush();
 
         if ($request->isXmlHttpRequest()) {
             return new Response('', 204);

@@ -33,6 +33,8 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class JobTrackerController extends Controller
 {
+    const BLOCK_SIZE = 8192;
+
     /** @var EngineInterface */
     protected $templating;
 
@@ -53,9 +55,6 @@ class JobTrackerController extends Controller
 
     /** @var JobExecutionRepository */
     protected $jobExecutionRepo;
-
-    /** @staticvar string */
-    const BLOCK_SIZE = 8192;
 
     /**
      * @param EngineInterface          $templating

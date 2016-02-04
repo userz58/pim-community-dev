@@ -97,7 +97,7 @@ class JobExecutionController
      */
     public function indexAction()
     {
-        return $this->templating->render(
+        return $this->templating->renderResponse(
             sprintf('PimImportExportBundle:%sExecution:index.html.twig', ucfirst($this->getJobType()))
         );
     }
