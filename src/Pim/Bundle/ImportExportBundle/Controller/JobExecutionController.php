@@ -144,7 +144,10 @@ class JobExecutionController extends AbstractDoctrineController
             }
 
             // limit the number of step execution returned to avoid memory overflow
-            $context = ['limit_warnings' => 100];
+            $context = [
+                'limit_warnings' => 100,
+                'locale'         => $request->getLocale()
+            ];
 
             return new JsonResponse(
                 [
