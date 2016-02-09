@@ -13,8 +13,9 @@ define([
         'underscore',
         'pim/fetcher-registry',
         'text!pim/template/product/field/metric',
+        'pim/initselect2',
         'jquery.select2'
-        ], function ($, Field, _, FetcherRegistry, fieldTemplate) {
+        ], function ($, Field, _, FetcherRegistry, fieldTemplate, initSelect2) {
     return Field.extend({
         fieldTemplate: _.template(fieldTemplate),
         events: {
@@ -22,7 +23,7 @@ define([
         },
         renderInput: function (context) {
             var $element = $(this.fieldTemplate(context));
-            $element.find('.unit').select2('destroy').select2();
+            initSelect2.init($element.find('.unit'));
 
             return $element;
         },

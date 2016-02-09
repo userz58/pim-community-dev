@@ -1,6 +1,6 @@
 /* global define */
-define(['jquery', 'underscore', 'oro/translator', 'oro/app', 'oro/datafilter/text-filter', 'jquery.select2'],
-function($, _, __, app, TextFilter) {
+define(['jquery', 'underscore', 'oro/translator', 'oro/app', 'oro/datafilter/text-filter', 'pim/initselect2', 'jquery.select2'],
+function($, _, __, app, TextFilter, initSelect2) {
     'use strict';
 
     /**
@@ -225,7 +225,7 @@ function($, _, __, app, TextFilter) {
         },
 
         _enableListSelection: function() {
-            this.$(this.criteriaValueSelectors.value).select2({
+            initSelect2.init(this.$(this.criteriaValueSelectors.value), {
                 multiple: true,
                 tokenSeparators: [',', ' ', ';'],
                 tags: [],
