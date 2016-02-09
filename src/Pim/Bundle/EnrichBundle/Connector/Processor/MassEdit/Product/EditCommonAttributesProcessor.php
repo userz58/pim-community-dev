@@ -2,6 +2,7 @@
 
 namespace Pim\Bundle\EnrichBundle\Connector\Processor\MassEdit\Product;
 
+use Akeneo\Component\StorageUtils\Detacher\ObjectDetacherInterface;
 use Akeneo\Component\StorageUtils\Updater\ObjectUpdaterInterface;
 use Akeneo\Component\StorageUtils\Updater\PropertySetterInterface;
 use Pim\Bundle\CatalogBundle\Exception\InvalidArgumentException;
@@ -36,12 +37,17 @@ class EditCommonAttributesProcessor extends AbstractProcessor
     /** @var ObjectUpdaterInterface */
     protected $productUpdater;
 
+    /** @var ObjectDetacherInterface */
+    protected $productDetacher;
+
     /**
      * @param PropertySetterInterface              $propertySetter
      * @param ValidatorInterface                   $validator
      * @param ProductMassActionRepositoryInterface $massActionRepository
      * @param AttributeRepositoryInterface         $attributeRepository
      * @param JobConfigurationRepositoryInterface  $jobConfigurationRepo
+     * @param ObjectUpdaterInterface               $productUpdater
+     * @param ObjectDetacherInterface              $productDetacher
      */
     public function __construct(
         PropertySetterInterface $propertySetter,
@@ -49,7 +55,8 @@ class EditCommonAttributesProcessor extends AbstractProcessor
         ProductMassActionRepositoryInterface $massActionRepository,
         AttributeRepositoryInterface $attributeRepository,
         JobConfigurationRepositoryInterface $jobConfigurationRepo,
-        ObjectUpdaterInterface $productUpdater
+        ObjectUpdaterInterface $productUpdater,
+        ObjectDetacherInterface $productDetacher
     ) {
         parent::__construct($jobConfigurationRepo);
 
@@ -57,6 +64,7 @@ class EditCommonAttributesProcessor extends AbstractProcessor
         $this->validator           = $validator;
         $this->attributeRepository = $attributeRepository;
         $this->productUpdater      = $productUpdater;
+        $this->productDetacher     = $productDetacher;
     }
 
     /**
@@ -72,6 +80,7 @@ class EditCommonAttributesProcessor extends AbstractProcessor
 
         if (!$this->isProductEditable($product)) {
             $this->stepExecution->incrementSummaryInfo('skipped_products');
+            $this->detachProduct($product);
 
             return null;
         }
@@ -81,6 +90,7 @@ class EditCommonAttributesProcessor extends AbstractProcessor
         $product = $this->updateProduct($product, $actions);
         if (null !== $product && !$this->isProductValid($product)) {
             $this->stepExecution->incrementSummaryInfo('skipped_products');
+            $this->detachProduct($product);
 
             return null;
         }
@@ -146,6 +156,7 @@ class EditCommonAttributesProcessor extends AbstractProcessor
         if (!empty($filteredValues)) {
             $this->productUpdater->update($product, $filteredValues);
         } else {
+            $this->detachProduct($product);
             $this->stepExecution->incrementSummaryInfo('skipped_products');
             $this->stepExecution->addWarning(
                 $this->getName(),
@@ -183,5 +194,13 @@ class EditCommonAttributesProcessor extends AbstractProcessor
     protected function isProductEditable(ProductInterface $product)
     {
         return true;
+    }
+
+    /**
+     * @param ProductInterface $product
+     */
+    protected function detachProduct(ProductInterface $product)
+    {
+        $this->productDetacher->detach($product);
     }
 }

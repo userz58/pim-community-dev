@@ -4,6 +4,7 @@ namespace spec\Pim\Bundle\EnrichBundle\Connector\Processor\MassEdit\Product;
 
 use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Component\StorageUtils\Detacher\ObjectDetacherInterface;
 use Akeneo\Component\StorageUtils\Updater\ObjectUpdaterInterface;
 use Akeneo\Component\StorageUtils\Updater\PropertySetterInterface;
 use PhpSpec\ObjectBehavior;
@@ -27,7 +28,8 @@ class EditCommonAttributesProcessorSpec extends ObjectBehavior
         ProductMassActionRepositoryInterface $massActionRepository,
         AttributeRepositoryInterface $attributeRepository,
         JobConfigurationRepositoryInterface $jobConfigurationRepo,
-        ObjectUpdaterInterface $productUpdater
+        ObjectUpdaterInterface $productUpdater,
+        ObjectDetacherInterface $objectDetacher
     ) {
         $this->beConstructedWith(
             $propertySetter,
@@ -35,7 +37,8 @@ class EditCommonAttributesProcessorSpec extends ObjectBehavior
             $massActionRepository,
             $attributeRepository,
             $jobConfigurationRepo,
-            $productUpdater
+            $productUpdater,
+            $objectDetacher
         );
     }
 
@@ -52,6 +55,7 @@ class EditCommonAttributesProcessorSpec extends ObjectBehavior
     function it_does_not_set_values_when_attribute_is_not_editable(
         $validator,
         $productUpdater,
+        $objectDetacher,
         AttributeInterface $attribute,
         AttributeRepositoryInterface $attributeRepository,
         ProductInterface $product,
@@ -69,6 +73,8 @@ class EditCommonAttributesProcessorSpec extends ObjectBehavior
             [],
             $product
         )->shouldBeCalled();
+
+        $objectDetacher->detach($product)->shouldBeCalled();
 
         $jobConfigurationRepo->findOneBy(['jobExecution' => $jobExecution])->willReturn($jobConfiguration);
 
