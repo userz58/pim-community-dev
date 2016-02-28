@@ -10,10 +10,13 @@ confirmation:
     variant group: ¿Está seguro que desea eliminar este grupo variante?
     group type: ¿Está seguro que desea eliminar este tipo de grupo?
     import profile: ¿Está seguro que desea eliminar este perfil de importación?
-    export profile: ¿Está seguro que desea eliminar este perfil exportador?
+    export profile: ¿Está seguro que desea eliminar este perfil de exportación?
     user: ¿Seguro que desea eliminar este usuario?
     role: ¿Está seguro que desea eliminar este rol?
 pim_datagrid:
+  mass_action_group:
+    quick_export:
+      label: Exportación rápida
   mass_action:
     delete:
       confirm_content: ¿Está seguro que desea eliminar los productos seleccionados?
@@ -41,7 +44,7 @@ flash:
   import profile:
     removed: Perfil de importación eliminado correctamente
   export profile:
-    removed: Perfil Exportador eliminado correctamente
+    removed: Perfil de exportación eliminado correctamente
   user:
     removed: Usuario eliminado correctamente
   role:
@@ -168,9 +171,6 @@ pim_enrich:
         copy: Copiar
       variant_group:
         updated_by: Actualizado por grupo de variantes
-        switch:
-          "yes": true
-          "no": false
       optional_attribute:
         remove: Suprimir este atributo
       locale_specific_attribute:
@@ -213,8 +213,8 @@ pim_enrich:
             add: Agregar
             add_attributes: Agregar atributos
           info:
-            search_attributes: Buscar
             no_available_attributes: No hay más atributos a agregar
+            attributes_selected: '{{ attributeCount }} atributo(s) seleccionado(s)'
         categories:
           title: Categorías
       panel:
@@ -226,9 +226,6 @@ pim_enrich:
           missing_values: Valores faltantes
         history:
           title: Historial
-      switch:
-        "no": false
-        "yes": true
       sequential_edit:
         info:
           products: productos
@@ -257,10 +254,6 @@ pim_enrich:
         title: Agregar opción de atributo
         confirm: Agregar
         cancel: Cancelar
-    entity:
-      switch:
-        "no": false
-        "yes": true
   mass_edit_action:
     edit_common_attributes:
       description: 'Los atributos seleccionados serán editados con la siguiente información para el local <span class="highlight">{{ locale }}</span> y el canal <span class="highlight">{{ channel }}</span> elegidos en la grilla de productos.'

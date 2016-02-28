@@ -1,7 +1,21 @@
 /* global define */
 define(
-    ['jquery', 'underscore', 'oro/translator', 'oro/datafilter/choice-filter', 'pim/date-context', 'bootstrap.datetimepicker'],
-function($, _, __, ChoiceFilter, DateContext) {
+    [
+        'jquery',
+        'underscore',
+        'oro/translator',
+        'oro/datafilter/choice-filter',
+        'datepicker',
+        'text!pim/template/datagrid/filter/date-filter'
+    ],
+function(
+    $,
+    _,
+    __,
+    ChoiceFilter,
+    Datepicker,
+    template
+) {
     'use strict';
 
     /**
@@ -17,27 +31,7 @@ function($, _, __, ChoiceFilter, DateContext) {
          *
          * @property {function(Object, ?Object=): String}
          */
-        popupCriteriaTemplate: _.template(
-            '<div>' +
-                '<div class="horizontal clearfix type">' +
-                    '<select name="<%= name %>" class="filter-select-oro">' +
-                        '<% _.each(choices, function (option) { %>' +
-                        '<option value="<%= option.value %>"<% if (option.value == selectedChoice) { %> selected="selected"<% } %>><%= option.label %></option>' +
-                        '<% }); %>' +
-                    '</select>' +
-                '</div>' +
-                '<div>' +
-                    '<span class="start"><input type="text" value="" class="<%= inputClass %> add-on" name="start" placeholder="from"></span>' +
-                    '<span class="filter-separator">-</span>' +
-                    '<span class="end"><input type="text" value="" class="<%= inputClass %> add-on" name="end" placeholder="to"></span>' +
-                '</div>' +
-                '<div class="oro-action">' +
-                    '<div class="btn-group">' +
-                        '<button class="btn btn-primary filter-update" type="button"><%- _.__("Update") %></button>' +
-                    '</div>' +
-                '</div>' +
-            '</div>'
-        ),
+        popupCriteriaTemplate: _.template(template),
 
         /**
          * Selectors for filter data
@@ -86,20 +80,7 @@ function($, _, __, ChoiceFilter, DateContext) {
          *
          * @property
          */
-        datetimepickerOptions: {
-            format: DateContext.get('date').format,
-            defaultFormat: DateContext.get('date').defaultFormat,
-            locale: DateContext.get('language'),
-            pickTime: false
-        },
-
-        /**
-         * Additional date widget options that might be passed to filter
-         * http://api.jqueryui.com/datepicker/
-         *
-         * @property
-         */
-        externalWidgetOptions: {},
+        datetimepickerOptions: {},
 
         /**
          * References to date widgets
@@ -134,7 +115,6 @@ function($, _, __, ChoiceFilter, DateContext) {
          * @inheritDoc
          */
         initialize: function () {
-            _.extend(this.datetimepickerOptions, this.externalWidgetOptions);
             // init empty value object if it was not initialized so far
             if (_.isUndefined(this.emptyValue)) {
                 this.emptyValue = {
@@ -201,20 +181,18 @@ function($, _, __, ChoiceFilter, DateContext) {
          * @inheritDoc
          */
         _initializeDateWidget: function(widgetSelector) {
-            var widget = this.$(widgetSelector);
-            widget.datetimepicker(this.datetimepickerOptions);
-            widget.addClass(this.datetimepickerOptions.className);
+            var $widget = Datepicker.init(this.$(widgetSelector), this.datetimepickerOptions);
 
-            var picker = widget.data('datetimepicker');
-            widget.on('changeDate', function(e) {
-                picker.format = this.datetimepickerOptions.defaultFormat;
+            var picker = $widget.data('datetimepicker');
+            $widget.on('changeDate', function(e) {
+                picker.format = Datepicker.options.defaultFormat;
                 this.values.value[e.target.className].defaultFormat = picker.formatDate(e.date);
 
-                picker.format = this.datetimepickerOptions.format;
+                picker.format = Datepicker.options.format;
                 this.values.value[e.target.className].format = picker.formatDate(e.date);
             }.bind(this));
 
-            return widget;
+            return $widget;
         },
 
         /**

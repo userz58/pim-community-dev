@@ -18,7 +18,9 @@ define(
         'pim/attribute/add-attribute-footer',
         'pim/user-context',
         'pim/fetcher-registry',
-        'pim/formatter/choices/base'
+        'pim/formatter/choices/base',
+        'oro/mediator',
+        'pim/initselect2'
     ],
     function (
         $,
@@ -30,7 +32,9 @@ define(
         AttributeFooter,
         UserContext,
         FetcherRegistry,
-        ChoicesFormatter
+        ChoicesFormatter,
+        mediator,
+        initSelect2
     ) {
         return BaseForm.extend({
             tagName: 'div',
@@ -148,11 +152,16 @@ define(
                 };
 
                 opts = $.extend(true, this.defaultOptions, opts);
+                $select = initSelect2.init($select, opts);
 
-                var select2 = $select.select2(opts);
+                // Close & destroy select2 DOM on change page via hash-navigation
+                mediator.once('hash_navigation_request:start', function () {
+                    $select.select2('close');
+                    $select.select2('destroy');
+                });
 
                 // On select2 "selecting" event, we bypass the selection to handle it ourself.
-                select2.on('select2-selecting', function (event) {
+                $select.on('select2-selecting', function (event) {
                     var attributeCode = event.val;
                     var alreadySelected = _.contains(this.selection, attributeCode);
 
@@ -169,7 +178,7 @@ define(
                     event.preventDefault();
                 }.bind(this));
 
-                select2.on('select2-open', function () {
+                $select.on('select2-open', function () {
                     this.selection = [];
                     this.attributeViews = [];
                     this.updateSelectedCounter();
