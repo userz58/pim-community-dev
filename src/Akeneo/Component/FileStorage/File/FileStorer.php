@@ -10,6 +10,7 @@ use League\Flysystem\FileExistsException;
 use League\Flysystem\MountManager;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Akeneo\Bundle\FileStorageBundle\Doctrine\ORM\Repository\FileInfoRepository;
 
 /**
  * Move a raw file to the storage destination filesystem
@@ -31,25 +32,54 @@ class FileStorer implements FileStorerInterface
     /** @var FileInfoFactoryInterface */
     protected $factory;
 
+    /** @var  FileInfoRepository */
+    protected $repository;
+
     /**
      * @param MountManager             $mountManager
      * @param SaverInterface           $saver
      * @param FileInfoFactoryInterface $factory
+     * @param FileInfoRepository       $repository
      */
     public function __construct(
         MountManager $mountManager,
         SaverInterface $saver,
-        FileInfoFactoryInterface $factory
+        FileInfoFactoryInterface $factory,
+        FileInfoRepository $repository
     ) {
         $this->mountManager = $mountManager;
         $this->saver        = $saver;
         $this->factory      = $factory;
+        $this->repository   = $repository;
     }
 
     /**
      * {@inheritdoc}
      */
     public function store(\SplFileInfo $localFile, $destFsAlias, $deleteRawFile = false)
+    {
+        $hash = sha1_file($localFile->getPathname());
+        $file = $this->findSavedFile($hash);
+
+        if (is_null($file)) {
+            $file = $this->saveNewFile($localFile, $destFsAlias);
+        }
+
+        if (true === $deleteRawFile) {
+            $this->deleteRawFile($localFile);
+        }
+
+        return $file;
+    }
+
+
+    public function findSavedFile($hash)
+    {
+        return $this->repository->findOneByHash($hash);
+    }
+
+
+    public function saveNewFile(\SplFileInfo $localFile, $destFsAlias)
     {
         $filesystem = $this->mountManager->getFilesystem($destFsAlias);
         $file = $this->factory->createFromRawFile($localFile, $destFsAlias);
@@ -81,12 +111,9 @@ class FileStorer implements FileStorerInterface
 
         $this->saver->save($file);
 
-        if (true === $deleteRawFile) {
-            $this->deleteRawFile($localFile);
-        }
-
         return $file;
     }
+
 
     /**
      * @param \SplFileInfo $file
