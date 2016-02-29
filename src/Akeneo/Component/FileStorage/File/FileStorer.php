@@ -58,8 +58,7 @@ class FileStorer implements FileStorerInterface
      */
     public function store(\SplFileInfo $localFile, $destFsAlias, $deleteRawFile = false)
     {
-        $hash = sha1_file($localFile->getPathname());
-        $file = $this->findSavedFile($hash);
+        $file = $this->findSavedFile($localFile);
 
         if (is_null($file)) {
             $file = $this->saveNewFile($localFile, $destFsAlias);
@@ -72,13 +71,19 @@ class FileStorer implements FileStorerInterface
         return $file;
     }
 
-
-    public function findSavedFile($hash)
+    /**
+     * @param \SplFileInfo $file
+     */
+    public function findSavedFile(\SplFileInfo $localFile)
     {
+        $hash = sha1_file($localFile->getPathname());
         return $this->repository->findOneByHash($hash);
     }
 
-
+    /**
+     * @param \SplFileInfo $file
+     * @param string $destFsAlias
+     */
     public function saveNewFile(\SplFileInfo $localFile, $destFsAlias)
     {
         $filesystem = $this->mountManager->getFilesystem($destFsAlias);
